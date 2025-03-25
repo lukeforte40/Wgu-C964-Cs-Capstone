@@ -3,20 +3,20 @@ from matplotlib import pyplot
 
 df = pd.read_csv("data/test.csv")
 
-print(df)
+# print(df)
 
-"""# Read the positive and negative text files into lists with the correct encoding
-with open('data/positive.txt', 'r', encoding='ISO-8859-1') as file:
+# Read the positive and negative text files into lists with the correct encoding
+with open('data/positive-words.txt', 'r', encoding='ISO-8859-1') as file:
     positive_words = file.read().splitlines()
 
-with open('data/negative.txt', 'r', encoding='ISO-8859-1') as file:
+with open('data/negative-words.txt', 'r', encoding='ISO-8859-1') as file:
     negative_words = file.read().splitlines()
 
 # Create dataframe and add words
 df_positive = pd.DataFrame(positive_words, columns=['Numbers'])
 df_negative = pd.DataFrame(negative_words, columns=['Numbers'])
 
-df_positive.hist()"""
+#df_positive.hist()
 
 # Function to perform sentiment analysis
 def analyze_sentiment(text):
