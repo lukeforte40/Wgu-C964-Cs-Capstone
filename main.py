@@ -40,10 +40,6 @@ df_words = pd.read_csv(file_path)
 
 df_Tweets = pd.read_csv("data/test.csv")
 
-#create histogram for words
-
-df_words.hist()
-
 # Function to perform sentiment analysis
 def analyze_sentiment(text):
     sentence = text.lower().split()
@@ -78,18 +74,24 @@ while run:
 
     input_text = input("Select an item from the list to begin:\n"
     "1) Input a custom sentence to analyze.\n"
-    "2) Run analysis on provided file to determine sentiment of each tweet.\n"
-    "3) Exit.\n"
+    "2) Run display the words csv in a histogram.\n"
+    "3) Run analysis on provided file to determine sentiment of each tweet.\n"
+    "4) Exit.\n"
     "Input: ")
-    match int(input_text):
-        case 1:
-            sentiment_input = input("Write a sentence to analyze (Type 'exit' to close):")
-            sentiment = analyze_sentiment(sentiment_input)
-            print(f"Sentiment: {sentiment}")
-        case 2:
-            print("Simulate analysis...")
-        case 3:
-            run = 0
-        case _:
-            print("Error! Command not recognized.")
-            pass
+    try:
+        match int(input_text):
+            case 1:
+                sentiment_input = input("Write a sentence to analyze (Type 'exit' to close):")
+                sentiment = analyze_sentiment(sentiment_input)
+                print(f"Sentiment: {sentiment}")
+            case 2:
+                df_words.hist()
+            case 3:
+                print("Simulate analysis...")
+            case 4:
+                run = 0
+            case _:
+                print("Error! Command not recognized.")
+                pass
+    except:
+        print("Error! Command not recognized.")
