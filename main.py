@@ -1,96 +1,87 @@
 import pandas as pd
+from sklearn import linear_model, metrics
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import CountVectorizer
 from matplotlib import pyplot
-import csv
-import os
+import seaborn as sns
 
-# Read the positive and negative text files into lists with the correct encoding
-with open('data/positive-words.txt', 'r', encoding='ISO-8859-1') as file:
-    positive_words = file.read().splitlines()
+# Import data sets
+df = pd.read_csv("data/test.csv",encoding='unicode_escape')
 
-with open('data/negative-words.txt', 'r', encoding='ISO-8859-1') as file:
-    negative_words = file.read().splitlines()
+# Prep data
+df.drop(columns = ["textID",'Time of Tweet', 'Age of User',
+       'Country', 'Population -2020', 'Land Area (Km²)', 'Density (P/Km²)' ], inplace=True)
 
-# Create words list and add words and sentiment score to it
+df.dropna()
 
-words = []
+df_labels = df["sentiment"].astype(str)
+df_data = df["text"].astype(str)
 
-for word in positive_words:
-    data = [{"word": str(word), "sentimentScore": 1}]
-    words = words + data
+vectorizer = CountVectorizer(
+    analyzer = 'word',
+    lowercase = False,
+)
 
-for word in negative_words:
-    data = [{"word": str(word), "sentimentScore": -1}]
-    words = words + data
+vectorizer = vectorizer.fit_transform(
+    df_data
+)
 
-# Create and add words to csv file
+vectorizer_nd = vectorizer.toarray()
 
-file_path = "data/words.csv"
+# Split data into dependent and independent
+X_train, X_test, y_train, y_test  = train_test_split(
+        vectorizer_nd,
+        df_labels,
+        train_size=0.70,
+        random_state=1234)
 
-if os.path.exists(file_path):
-    os.remove(file_path)
+# Set up Linear regression model
+model = linear_model.LogisticRegression()
 
-with open(file_path, 'w', newline='') as csvFile:
-    fieldnames = ['word',"sentimentScore"]
-    writer = csv.DictWriter(csvFile, fieldnames=fieldnames)
-    writer.writeheader()
-    writer.writerows(words)
+model.fit(X=X_train,y=y_train)
 
-# Create dataframe for words and tweets
-df_words = pd.read_csv(file_path)
+y_prediction = model.predict(X_test)
 
-df_Tweets = pd.read_csv("data/test.csv")
+accuracy = metrics.accuracy_score(y_test,y_prediction)
 
-# Function to perform sentiment analysis
-def analyze_sentiment(text):
-    sentence = text.lower().split()
-    
-    #Initialize a sentiment score to keep track of the sentiment of the text.
-    sentiment_score = 0
-
-    #Loop through the words in the preprocessed text and adjust the sentiment score based on the presence of words in sentence.
-    for word in sentence:
-        matching_rows = []
-        with open(file_path, 'r', newline='') as csvFile:
-            csv_reader = csv.reader(csvFile)
-            for row in csv_reader:
-                if any(word in field for field in row):
-                    matching_rows.append(row)
-    
-    #Loop through the matching rows and add up the sentiment score
-    for row in matching_rows:
-        sentiment_score += int(row[1])
-
-    # Classify sentiment based on score
-    if sentiment_score > 0:
-        return "Positive"
-    elif sentiment_score < 0:
-        return "Negative"
-    else:
-        return "Neutral"
-    
 # Input loop to start program
 run = 1
 while run:
 
     input_text = input("Select an item from the list to begin:\n"
     "1) Input a custom sentence to analyze.\n"
-    "2) Run analysis on test.csv file to determine sentiment of each tweet.\n"
+    "2) View a chart of ratios of each sentiment for training data.\n"
+    "3) View a chart of ratios of each sentiment from results.\n"
+    "4) View a confusion matrix on the correctness of the model for the sample data.\n"
+    "5) View accuracy of prediction.\n"
+    "6) "
     "3) Exit.\n"
     "Input: ")
     try:
         match int(input_text):
-            case 1:
+            case 1: # Input a custom sentence to analyze
                 sentiment_input = input("Write a sentence to analyze (Type 'exit' to close):")
-                sentiment = analyze_sentiment(sentiment_input)
+                sentiment = model.predict(sentiment_input)
                 print(f"Sentiment: {sentiment}")
-            case 2:
-                with open("data/test.csv", 'r', newline='') as csvInput:
-                    csv_reader = csv.reader(csvInput)
-                    for row in csv_reader:
-                        print(row[1])
-                        sentiment = analyze_sentiment(row[1])
-                        print(f"Sentiment: {sentiment}")
-            case 3:
+            case 2: # View a chart of ratios of each sentiment for training data.
+                pyplot.pie(y_train.value_counts(), labels=["positive", "negative", "neutral", "other"])
+                pyplot.title("Ratios of each sentiment for training data")
+                pyplot.show()
+            case 3: # View a chart of ratios of each sentiment from results.
+                pyplot.pie(pd.Series(y_prediction).value_counts(), labels=["positive", "negative", "neutral", "other"])
+                pyplot.title("Ratios of each sentiment from results")
+                pyplot.show()
+            case 4: # View a confusion matrix on the correctness of the model for the sample data.
+                cm = metrics.confusion_matrix(y_test, y_prediction)
+                sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
+                pyplot.xlabel('Predicted')
+                pyplot.ylabel('Actual')
+                pyplot.title('Confusion Matrix')
+                pyplot.show()
+            case 5: # View accuracy of prediction.
+                print("Accuracy: ")
+                print(accuracy)
+            case 6: # Exit
                 run = 0
             case _:
                 print("Error! Command not recognized.")
