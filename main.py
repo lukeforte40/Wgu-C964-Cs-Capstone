@@ -10,7 +10,7 @@ with open('data/positive-words.txt', 'r', encoding='ISO-8859-1') as file:
 with open('data/negative-words.txt', 'r', encoding='ISO-8859-1') as file:
     negative_words = file.read().splitlines()
 
-# create words list and add words and sentiment score to it
+# Create words list and add words and sentiment score to it
 
 words = []
 
@@ -22,7 +22,7 @@ for word in negative_words:
     data = [{"word": str(word), "sentimentScore": -1}]
     words = words + data
 
-# create and add words to csv file
+# Create and add words to csv file
 
 file_path = "data/words.csv"
 
@@ -74,9 +74,8 @@ while run:
 
     input_text = input("Select an item from the list to begin:\n"
     "1) Input a custom sentence to analyze.\n"
-    "2) Run display the words csv in a histogram.\n"
-    "3) Run analysis on provided file to determine sentiment of each tweet.\n"
-    "4) Exit.\n"
+    "2) Run analysis on test.csv file to determine sentiment of each tweet.\n"
+    "3) Exit.\n"
     "Input: ")
     try:
         match int(input_text):
@@ -85,13 +84,16 @@ while run:
                 sentiment = analyze_sentiment(sentiment_input)
                 print(f"Sentiment: {sentiment}")
             case 2:
-                df_words.hist()
+                with open("data/test.csv", 'r', newline='') as csvInput:
+                    csv_reader = csv.reader(csvInput)
+                    for row in csv_reader:
+                        print(row[1])
+                        sentiment = analyze_sentiment(row[1])
+                        print(f"Sentiment: {sentiment}")
             case 3:
-                print("Simulate analysis...")
-            case 4:
                 run = 0
             case _:
                 print("Error! Command not recognized.")
                 pass
     except:
-        print("Error! Command not recognized.")
+        print("Error! Please try again.")
