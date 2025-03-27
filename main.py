@@ -44,6 +44,18 @@ y_prediction = model.predict(X_test)
 
 accuracy = metrics.accuracy_score(y_test,y_prediction)
 
+sentiment_input = input("Write a sentence to analyze:")
+vectorizer = CountVectorizer(
+    analyzer = 'word',
+    lowercase = False,
+)
+inp_vectorizer = vectorizer.fit_transform(
+    [sentiment_input]
+)
+inp_vectorizer_nd = inp_vectorizer.toarray()
+sentiment = model.predict(inp_vectorizer_nd)
+print(f"Sentiment: {sentiment}")
+
 # Input loop to start program
 run = 1
 while run:
@@ -54,14 +66,17 @@ while run:
     "3) View a chart of ratios of each sentiment from results.\n"
     "4) View a confusion matrix on the correctness of the model for the sample data.\n"
     "5) View accuracy of prediction.\n"
-    "6) "
-    "3) Exit.\n"
+    "6) Exit.\n"
     "Input: ")
     try:
         match int(input_text):
             case 1: # Input a custom sentence to analyze
-                sentiment_input = input("Write a sentence to analyze (Type 'exit' to close):")
-                sentiment = model.predict(sentiment_input)
+                sentiment_input = input("Write a sentence to analyze:")
+                inp_vectorizer = vectorizer.fit_transform(
+                    sentiment_input
+                )
+                inp_vectorizer_nd = inp_vectorizer.toarray()
+                sentiment = model.predict(inp_vectorizer_nd)
                 print(f"Sentiment: {sentiment}")
             case 2: # View a chart of ratios of each sentiment for training data.
                 pyplot.pie(y_train.value_counts(), labels=["positive", "negative", "neutral", "other"])
