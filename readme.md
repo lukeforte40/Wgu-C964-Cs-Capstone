@@ -122,9 +122,8 @@ C.  Design and develop your fully functional data product that addresses your id
 •   implementation of interactive queries
 
         case 1: # Input a custom sentence to analyze
-        sentiment_input = input("Write a sentence to analyze (Type 'exit' to close):")
-        sentiment = model.predict(sentiment_input)
-        print(f"Sentiment: {sentiment}")
+        sentiment_input = input("Write a sentence to analyze:")
+        print("Sentiment: ", model.predict(vectorizer.transform([sentiment_input]))[0])
 
 •   implementation of machine-learning methods and algorithms
 
@@ -159,47 +158,45 @@ C.  Design and develop your fully functional data product that addresses your id
         # Input loop to start program
         run = 1
         while run:
-    
+        
         input_text = input("Select an item from the list to begin:\n"
         "1) Input a custom sentence to analyze.\n"
         "2) View a chart of ratios of each sentiment for training data.\n"
         "3) View a chart of ratios of each sentiment from results.\n"
         "4) View a confusion matrix on the correctness of the model for the sample data.\n"
         "5) View accuracy of prediction.\n"
-        "6) "
-        "3) Exit.\n"
+        "6) Exit.\n"
         "Input: ")
         try:
-            match int(input_text):
-                case 1: # Input a custom sentence to analyze
-                    sentiment_input = input("Write a sentence to analyze (Type 'exit' to close):")
-                    sentiment = model.predict(sentiment_input)
-                    print(f"Sentiment: {sentiment}")
-                case 2: # View a chart of ratios of each sentiment for training data.
-                    pyplot.pie(y_train.value_counts(), labels=["positive", "negative", "neutral", "other"])
-                    pyplot.title("Ratios of each sentiment for training data")
-                    pyplot.show()
-                case 3: # View a chart of ratios of each sentiment from results.
-                    pyplot.pie(pd.Series(y_prediction).value_counts(), labels=["positive", "negative", "neutral", "other"])
-                    pyplot.title("Ratios of each sentiment from results")
-                    pyplot.show()
-                case 4: # View a confusion matrix on the correctness of the model for the sample data.
-                    cm = metrics.confusion_matrix(y_test, y_prediction)
-                    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
-                    pyplot.xlabel('Predicted')
-                    pyplot.ylabel('Actual')
-                    pyplot.title('Confusion Matrix')
-                    pyplot.show()
-                case 5: # View accuracy of prediction.
-                    print("Accuracy: ")
-                    print(accuracy)
-                case 6: # Exit
-                    run = 0
-                case _:
-                    print("Error! Command not recognized.")
-                    pass
+        match int(input_text):
+        case 1: # Input a custom sentence to analyze
+        sentiment_input = input("Write a sentence to analyze:")
+        print("Sentiment: ", model.predict(vectorizer.transform([sentiment_input]))[0])
+        case 2: # View a chart of ratios of each sentiment for training data.
+        pyplot.pie(y_train.value_counts(), labels=["positive", "negative", "neutral", "other"])
+        pyplot.title("Ratios of each sentiment for training data")
+        pyplot.show()
+        case 3: # View a chart of ratios of each sentiment from results.
+        pyplot.pie(pd.Series(y_prediction).value_counts(), labels=["positive", "negative", "neutral", "other"])
+        pyplot.title("Ratios of each sentiment from results")
+        pyplot.show()
+        case 4: # View a confusion matrix on the correctness of the model for the sample data.
+        cm = metrics.confusion_matrix(y_test, y_prediction)
+        sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
+        pyplot.xlabel('Predicted')
+        pyplot.ylabel('Actual')
+        pyplot.title('Confusion Matrix')
+        pyplot.show()
+        case 5: # View accuracy of prediction.
+        print("Accuracy: ")
+        print(accuracy)
+        case 6: # Exit
+        run = 0
+        case _:
+        print("Error! Command not recognized.")
+        pass
         except:
-            print("Error! Please try again.")
+        print("Error! Please try again.")
 
         # plots and graphs
         # descriptive pie

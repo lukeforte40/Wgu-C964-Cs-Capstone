@@ -22,11 +22,11 @@ vectorizer = CountVectorizer(
     lowercase = False,
 )
 
-vectorizer = vectorizer.fit_transform(
+vect = vectorizer.fit_transform(
     df_data
 )
 
-vectorizer_nd = vectorizer.toarray()
+vectorizer_nd = vect.toarray()
 
 # Split data into dependent and independent
 X_train, X_test, y_train, y_test  = train_test_split(
@@ -44,18 +44,6 @@ y_prediction = model.predict(X_test)
 
 accuracy = metrics.accuracy_score(y_test,y_prediction)
 
-sentiment_input = input("Write a sentence to analyze:")
-vectorizer = CountVectorizer(
-    analyzer = 'word',
-    lowercase = False,
-)
-inp_vectorizer = vectorizer.fit_transform(
-    [sentiment_input]
-)
-inp_vectorizer_nd = inp_vectorizer.toarray()
-sentiment = model.predict(inp_vectorizer_nd)
-print(f"Sentiment: {sentiment}")
-
 # Input loop to start program
 run = 1
 while run:
@@ -72,12 +60,7 @@ while run:
         match int(input_text):
             case 1: # Input a custom sentence to analyze
                 sentiment_input = input("Write a sentence to analyze:")
-                inp_vectorizer = vectorizer.fit_transform(
-                    sentiment_input
-                )
-                inp_vectorizer_nd = inp_vectorizer.toarray()
-                sentiment = model.predict(inp_vectorizer_nd)
-                print(f"Sentiment: {sentiment}")
+                print("Sentiment: ", model.predict(vectorizer.transform([sentiment_input]))[0])
             case 2: # View a chart of ratios of each sentiment for training data.
                 pyplot.pie(y_train.value_counts(), labels=["positive", "negative", "neutral", "other"])
                 pyplot.title("Ratios of each sentiment for training data")
