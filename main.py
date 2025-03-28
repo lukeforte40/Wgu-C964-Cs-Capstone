@@ -1,5 +1,6 @@
 import pandas as pd
 from sklearn import linear_model, metrics
+from sklearn.metrics import ConfusionMatrixDisplay
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import CountVectorizer
 from matplotlib import pyplot
@@ -70,11 +71,10 @@ while run:
                 pyplot.title("Ratios of each sentiment from results")
                 pyplot.show()
             case 4: # View a confusion matrix on the correctness of the model for the sample data.
+                labels = ["positive", "negative", "neutral"]
                 cm = metrics.confusion_matrix(y_test, y_prediction)
-                sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
-                pyplot.xlabel('Predicted')
-                pyplot.ylabel('Actual')
-                pyplot.title('Confusion Matrix')
+                disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=model.classes_)
+                disp.plot()
                 pyplot.show()
             case 5: # View accuracy of prediction.
                 print("Accuracy: ")
