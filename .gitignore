@@ -1,3 +1,7 @@
 .venv
 /shelf/
 /workspace.xml
+/dist
+/build
+.ipynb_checkpoints
+main.spec

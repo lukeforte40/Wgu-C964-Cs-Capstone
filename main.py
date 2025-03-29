@@ -37,7 +37,7 @@ X_train, X_test, y_train, y_test  = train_test_split(
         random_state=1234)
 
 # Set up Linear regression model
-model = linear_model.LogisticRegression()
+model = linear_model.LogisticRegression(max_iter=100)
 
 model.fit(X=X_train,y=y_train)
 
